@@ -30,6 +30,9 @@
    .globl   _ps2sdk_libc_deinit_weak
    .type    _ps2sdk_libc_deinit_weak, @function
 
+   .weak _ps2sdk_memory_init
+   .type _ps2sdk_memory_init, @function
+
    .extern _InitSys
    .extern Exit
    .extern FlushCache
@@ -83,6 +86,16 @@ setupthread:
    # writeback data cache
    jal FlushCache  # FlushCache(0)
    move   $4, $0
+
+memory_init:
+   # Capability to override 32MiB on DESR/DVR models (weak)
+
+   la     $8, _ps2sdk_memory_init
+   beqz   $8, 1f
+   nop
+   jalr   $8      # _ps2sdk_memory_init()
+   nop
+1:
 
 parseargs:
    # call ps2sdk argument parsing (weak)
