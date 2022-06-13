@@ -18,17 +18,17 @@
    .extern   _stack
    .extern   _stack_size
 
-   .weakext _ps2sdk_args_parse_weak, _ps2sdk_args_parse
-   .globl   _ps2sdk_args_parse_weak
-   .type    _ps2sdk_args_parse_weak, @function
+   .weakext _libcglue_args_parse_weak, _libcglue_args_parse
+   .globl   _libcglue_args_parse_weak
+   .type    _libcglue_args_parse_weak, @function
 
-   .weakext _ps2sdk_libc_init_weak, _ps2sdk_libc_init
-   .globl   _ps2sdk_libc_init_weak
-   .type    _ps2sdk_libc_init_weak, @function
+   .weakext _libcglue_init_weak, _libcglue_init
+   .globl   _libcglue_init_weak
+   .type    _libcglue_init_weak, @function
 
-   .weakext _ps2sdk_libc_deinit_weak, _ps2sdk_libc_deinit
-   .globl   _ps2sdk_libc_deinit_weak
-   .type    _ps2sdk_libc_deinit_weak, @function
+   .weakext _libcglue_deinit_weak, _libcglue_deinit
+   .globl   _libcglue_deinit_weak
+   .type    _libcglue_deinit_weak, @function
 
    .weak _ps2sdk_memory_init
    .type _ps2sdk_memory_init, @function
@@ -98,24 +98,24 @@ memory_init:
 1:
 
 parseargs:
-   # call ps2sdk argument parsing (weak)
+   # call libcglue argument parsing (weak)
 
    la   $16, _args
-   la   $8, _ps2sdk_args_parse_weak
+   la   $8, _libcglue_args_parse_weak
    beqz   $8, 1f
    lw   $4, ($16)
 
-   jalr   $8      # _ps2sdk_args_parse(argc, argv)
+   jalr   $8      # _libcglue_args_parse(argc, argv)
    addiu   $5, $16, 4
 1:
 
 libc_init:
-   # initialize ps2sdk libc (weak)
+   # initialize libcglue (weak)
 
-   la   $8, _ps2sdk_libc_init_weak
+   la   $8, _libcglue_init_weak
    beqz   $8, 1f
    nop
-   jalr   $8      # _ps2sdk_libc_init()
+   jalr   $8      # _libcglue_init()
    nop
 1:
 
@@ -163,12 +163,12 @@ dtors:
 1:
 
 libc_uninit:
-   # uninitialize ps2sdk libc (weak)
+   # uninitialize libcglue (weak)
 
-   la   $8, _ps2sdk_libc_deinit_weak
+   la   $8, _libcglue_deinit_weak
    beqz   $8, 1f
    nop
-   jalr   $8      # _ps2sdk_libc_deinit()
+   jalr   $8      # _libcglue_deinit()
    nop
 1:
 
