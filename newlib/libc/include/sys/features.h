@@ -533,6 +533,7 @@ extern "C" {
 
 #ifdef _MIPS_ARCH_R5900
 # define _POSIX_TIMERS				1
+# define _POSIX_MONOTONIC_CLOCK			200112L
 #endif
 
 #ifdef __cplusplus
